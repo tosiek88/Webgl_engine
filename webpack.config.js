@@ -12,16 +12,21 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts?$/,
-        exclude: /(node_modules)/,
+        test: /\.(glsl|vs|fs)$/,
+        use: {
+          loader: 'ts-shader-loader'
+        }
+      },
+      {
+        test: /\.ts$/,
+        exclude: [/(node_modules)/, /\.glsl$/],
         use: {
           loader: 'ts-loader',
         }
-       
-      },
+      }
     ]
   },
   resolve: {
-    extensions: [".ts", ".js"]
+    extensions: [".ts", ".js", ".glsl"]
   },
 };
