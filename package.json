@@ -12,6 +12,7 @@
   "devDependencies": {
     "babel-loader": "^7.1.5",
     "ts-loader": "^4.4.2",
+    "ts-shader-loader": "^1.0.5",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.4"
