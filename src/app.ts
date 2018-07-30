@@ -2,13 +2,29 @@
 import * as vertexSrc from './shaders/vertex.glsl';
 import * as fragmentSrc from './shaders/fragment.glsl';
 import  Compiler from './core/Compiler'
+import VAO from './core/VAO';
+import VertexBufferLayout from './core/VertexBufferLayout';
+import VBO from './core/VBO';
 
 
 
 
 const canvas = document.getElementById("primary_canvas") as HTMLCanvasElement;
-const gl = canvas.getContext("webgl2") as WebGLRenderingContext;
+const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
 const compiler:Compiler= new Compiler(gl, vertexSrc.default, fragmentSrc.default);
+
+
+const vao=new VAO(gl);
+const layout=new VertexBufferLayout();
+layout.Push(3);
+
+const positions = [
+    0, 0,
+    0, 0.5,
+    0.7, 0,
+];
+const vbo=new VBO(gl);
+vbo.setData(positions);
 
 
 
@@ -17,11 +33,7 @@ const positionBuffer = gl.createBuffer();
 
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 // three 2d points
-const positions = [
-    0, 0,
-    0, 0.5,
-    0.7, 0,
-];
+
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
 gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
