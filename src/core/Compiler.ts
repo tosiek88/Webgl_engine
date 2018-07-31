@@ -47,5 +47,9 @@ export default class Compiler {
         return this._gl.getAttribLocation(this._program, attributeName) as number;
     }
 
+    public useProgram(){
+        this._gl.useProgram(this._program);
+    }
+
 
 }
