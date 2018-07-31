@@ -7,9 +7,17 @@ interface IVertexBufferElement {
     offset: number
 }
 
-class VertexBufferElement {
-    constructor(BufferElement: IVertexBufferElement) {
+class VertexBufferElement implements IVertexBufferElement {
+    public type: number=0;    
+    public count: number=0;
+    public normalize: boolean=true;
+    public offset: number=0;
 
+    constructor(elements:IVertexBufferElement) {
+        this.type=elements.type;
+        this.count=elements.count;
+        this.normalize=elements.normalize;
+        this.offset=elements.offset;
     }
 
     static GetSizeOfType = (type: number): number => {
@@ -33,9 +41,17 @@ export default class VertexBufferLayout {
 
     }
 
+    public GetElements():VertexBufferElement[]{
+        return this._elements;
+    }
+
+    public get Stride():number{
+        return this._stride;
+    }
+
     public Push<FLOAT>(count: number) {
         let o = {
-            type: WebGLRenderingContext.FLOAT,
+            type: WebGLRenderingContext.FLOAT,            
             count: count,
             normalize: true,
             offset: this._offset

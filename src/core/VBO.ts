@@ -3,7 +3,7 @@ export default class VBO{
     private _buffor:Float32Array=new Float32Array([]);
 
     public constructor(private _gl:WebGL2RenderingContext){
-        this._vbo=this._gl.createBuffer();
+        this._vbo=this._gl.createBuffer();        
     }
 
     public setData(data:number[]){
