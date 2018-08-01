@@ -1,5 +1,6 @@
+#version 300 es
 // an attribute will receive data from a buffer
-attribute vec4 a_position;
+in vec4 a_position;
  
 // all shaders have a main function
 void main() {

@@ -1,3 +1,5 @@
+import { compilation } from "webpack";
+
 type Shader = (WebGLShader | null);
 
 export default class Compiler {
@@ -11,7 +13,6 @@ export default class Compiler {
 
         this._vertex = this.createShader(this._gl, this._gl.VERTEX_SHADER, vertexSrc) as Shader;
         this._fragment = this.createShader(this._gl, this._gl.FRAGMENT_SHADER, fragmentSrc) as Shader;
-
         this._program = this.createProgram(this._gl, this._vertex, this._fragment) as WebGLProgram;
     }
 
@@ -34,6 +35,7 @@ export default class Compiler {
         const shader = gl.createShader(type);
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
+        console.log(gl.getShaderInfoLog(shader));
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
         if (success) {
             return shader;
