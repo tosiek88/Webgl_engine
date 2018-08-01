@@ -4,20 +4,27 @@ type Shader = (WebGLShader | null);
 
 export default class Compiler {
 
-    private _vertex: Shader
-    private _fragment: Shader
-    private _program: WebGLProgram
+    private vertex: Shader;
+    private fragment: Shader;
+    private program: WebGLProgram;
 
+    public constructor(private gl: WebGLRenderingContext, vertexSrc: string, fragmentSrc: string) {
 
-    public constructor(private _gl: WebGLRenderingContext, vertexSrc: string, fragmentSrc: string) {
-
-        this._vertex = this.createShader(this._gl, this._gl.VERTEX_SHADER, vertexSrc) as Shader;
-        this._fragment = this.createShader(this._gl, this._gl.FRAGMENT_SHADER, fragmentSrc) as Shader;
-        this._program = this.createProgram(this._gl, this._vertex, this._fragment) as WebGLProgram;
+        this.vertex = this.createShader(this.gl, this.gl.VERTEX_SHADER, vertexSrc) as Shader;
+        this.fragment = this.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentSrc) as Shader;
+        this.program = this.createProgram(this.gl, this.vertex, this.fragment) as WebGLProgram;
     }
 
-    public get Program():WebGLProgram{
-        return this._program; 
+    public getAttributeLocatio(attributeName: string): number {
+        return this.gl.getAttribLocation(this.program, attributeName) as number;
+    }
+
+    public useProgram() {
+        this.gl.useProgram(this.program);
+    }
+
+    public get Program(): WebGLProgram {
+        return this.program;
     }
 
     private createProgram(gl: WebGLRenderingContext, vertexShader: Shader, fragmentShader: Shader) {
@@ -44,14 +51,4 @@ export default class Compiler {
         console.log(gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
     }
-
-    public getAttributeLocatio(attributeName: string): number {
-        return this._gl.getAttribLocation(this._program, attributeName) as number;
-    }
-
-    public useProgram(){
-        this._gl.useProgram(this._program);
-    }
-
-
 }
