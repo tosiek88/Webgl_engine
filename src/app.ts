@@ -7,7 +7,24 @@ import VertexBufferLayout from './core/VertexBufferLayout';
 import VBO from './core/VBO';
 
 
-
+function resize(gl:WebGL2RenderingContext) {
+    var realToCSSPixels = window.devicePixelRatio;
+  
+    // Lookup the size the browser is displaying the canvas in CSS pixels
+    // and compute a size needed to make our drawingbuffer match it in
+    // device pixels.
+    var displayWidth  = Math.floor(gl.canvas.clientWidth  * realToCSSPixels);
+    var displayHeight = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
+  
+    // Check if the canvas is not the same size.
+    if (gl.canvas.width  !== displayWidth ||
+        gl.canvas.height !== displayHeight) {
+  
+      // Make the canvas the same size
+      gl.canvas.width  = displayWidth;
+      gl.canvas.height = displayHeight;
+    }
+  }
 
 const canvas = document.getElementById("primary_canvas") as HTMLCanvasElement;
 const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
@@ -31,7 +48,7 @@ const vbo = new VBO(gl);
 vbo.bind();
 vbo.setData(positions);
 vao.addBuffor(vbo, layout);
-
+resize(gl);
 gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
 // Clear the canvas
@@ -40,5 +57,5 @@ gl.clear(gl.COLOR_BUFFER_BIT);
 
 var primitiveType = gl.TRIANGLES;
 var offset = 0;
-var count = 6;
+var count =6;
 gl.drawArrays(primitiveType, offset, count);
