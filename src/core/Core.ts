@@ -1,20 +1,11 @@
 import { mat4 } from "gl-matrix";
+import IColor from "./Interfaces/IColor";
+import IDrawable from "./Interfaces/IDrawable";
+import IRenderable from "./Interfaces/IRenderable";
+import IUpdateable from "./Interfaces/IUpdateable";
 
-interface IUpdateable {
-    update(): boolean;
-}
-
-interface IRenderable {
-    render(): boolean;
-}
-
-interface IDrawable {
-    readonly primitiveType: number;
-    readonly countVertex: number;
-    draw(): boolean;
-}
-
-export default class Core implements IUpdateable, IDrawable {
+export default class Core implements IUpdateable, IDrawable, IRenderable {
+    public timeSpent: number = 0;
 
     public countVertex: number = 0;
     public primitiveType: number = 0;
@@ -33,8 +24,8 @@ export default class Core implements IUpdateable, IDrawable {
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 
     }
-    public clear() {
-        this.gl.clearColor(0, 0, 0, 0);
+    public clear(color: IColor) {
+        this.gl.clearColor(color.r, color.b, color.g, color.a);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     }
 
@@ -60,15 +51,27 @@ export default class Core implements IUpdateable, IDrawable {
     public update(): boolean {
         return true;
     }
-
+    public render(): boolean {
+        this.timeSpent += 1.0 / 60.0;
+        console.log(this.timeSpent);
+        const factor = (Math.sin(this.timeSpent) + 1 * 0.5);
+        const color = { r: factor * 0.7 + 0.3, g: 0.0, b: 0.0, a: 1.0 } as IColor;
+        this.clear(color);
+        return true;
+    }
     public run() {
-        this.clear();
-        this.draw();
+        this.renderLoop();
     }
 
     public draw(): boolean {
         this.gl.drawArrays(this.primitiveType, 0, this.countVertex);
         return true;
+    }
+
+    private renderLoop = () => {
+        this.render();
+        this.draw();
+        window.setTimeout(this.renderLoop, 1000 / 60);
     }
 
     private selectCanvas(idCanvas: string) {
