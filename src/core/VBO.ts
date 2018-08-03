@@ -1,4 +1,5 @@
 export default class VBO {
+    public name: string;
     private vbo: WebGLBuffer | null;
     private buffor: Float32Array = new Float32Array([]);
 
