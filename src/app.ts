@@ -1,60 +1,44 @@
-
+// import { vec2 } from "gl-matrix";
 import Compiler from "./core/Compiler";
+import Core from "./core/Core";
+import IBO from "./core/IBO";
+import Retangle from "./core/Primitives/Retangle";
+import Renderer from "./core/Renderer";
 import VAO from "./core/VAO";
 import VBO from "./core/VBO";
 import VertexBufferLayout from "./core/VertexBufferLayout";
 import * as fragmentSrc from "./shaders/fragment.glsl";
 import * as vertexSrc from "./shaders/vertex.glsl";
 
-function resize(glContext: WebGL2RenderingContext) {
-    const realToCSSPixels = window.devicePixelRatio;
-
-    // Lookup the size the browser is displaying the canvas in CSS pixels
-    // and compute a size needed to make our drawingbuffer match it in
-    // device pixels.
-    const displayWidth = Math.floor(glContext.canvas.clientWidth * realToCSSPixels);
-    const displayHeight = Math.floor(glContext.canvas.clientHeight * realToCSSPixels);
-
-    // Check if the canvas is not the same size.
-    if (glContext.canvas.width !== displayWidth ||
-        glContext.canvas.height !== displayHeight) {
-
-        // Make the canvas the same size
-        glContext.canvas.width = displayWidth;
-        glContext.canvas.height = displayHeight;
-    }
-}
-
-const canvas = document.getElementById("primary_canvas") as HTMLCanvasElement;
-const gl = canvas.getContext("webgl2") as WebGL2RenderingContext;
-const compiler: Compiler = new Compiler(gl, vertexSrc.default, fragmentSrc.default);
+const core = new Core();
+const compiler: Compiler = new Compiler(core.GL, vertexSrc.default, fragmentSrc.default);
 compiler.useProgram();
 
-const vao = new VAO(gl);
-const layout = new VertexBufferLayout();
-layout.Push(2); // 2 vertecies
+// const vao = new VAO(core.GL);
+// const bufferLayout = new VertexBufferLayout();
+// bufferLayout.Push(2); // 2 vertecies
 
-const positions = [
-    0, 0, // 1st vertices
-    0.5, 0, // 2nd vertecies
-    0.5, 0.5, // 3rd vertecies
-    0.5, 0.5,
-    0, 0.5,
-    0, 0,
-];
+// const positions2 = new Float32Array([
+//     0, 0, // 1st vertices
+//     0.5, 0, // 2nd vertecies
+//     0.5, 0.5, // 3rd vertecies
+//     0, 0.5,
+// ]);
 
-const vbo = new VBO(gl);
-vbo.bind();
-vbo.setData(positions);
-vao.addBuffor(vbo, layout);
-resize(gl);
-gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+// const indicies = new Uint16Array([
+//     0, 1, 2,
+//     2, 3, 0,
+// ]);
 
-// Clear the canvas
-gl.clearColor(0, 0, 0, 0);
-gl.clear(gl.COLOR_BUFFER_BIT);
+// const vbo = new VBO(core.GL);
+// vbo.bind();
+// vbo.setBuffer(positions2);
 
-const primitiveType = gl.TRIANGLES;
-const offset = 0;
-const count = 6;
-gl.drawArrays(primitiveType, offset, count);
+// vao.addBuffor(vbo, bufferLayout);
+
+// const ibo = new IBO(core.GL);
+// ibo.setBuffor(indicies);
+const retangle = new Retangle(core.GL, [0.0, 0.0], [0.7, 0.5]);
+retangle.render();
+
+core.run();

@@ -1,14 +1,16 @@
-export default class VBO {
-    private vbo: WebGLBuffer | null;
-    private buffor: Float32Array = new Float32Array([]);
+import Buffers from "./Abstract/Buffers";
 
-    public constructor(private gl: WebGL2RenderingContext) {
+export default class VBO extends Buffers {
+    public name: string;
+    private vbo: WebGLBuffer | null;
+
+    public constructor(gl: WebGL2RenderingContext) {
+        super(gl);
         this.vbo = this.gl.createBuffer();
     }
 
-    public setData(data: number[]) {
-        this.buffor = new Float32Array(data);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.buffor, this.gl.STATIC_DRAW);
+    public setBuffer(data: Float32Array) {
+        super.setData(this.gl.ARRAY_BUFFER, data);
     }
 
     public bind() {
