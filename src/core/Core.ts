@@ -4,7 +4,7 @@ import IDrawable from "./Interfaces/IDrawable";
 import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
 
-export default class Core implements IUpdateable, IDrawable, IRenderable {
+export default class Core implements IUpdateable, IDrawable {
     public timeSpent: number = 0;
 
     public countVertex: number = 0;
@@ -17,6 +17,7 @@ export default class Core implements IUpdateable, IDrawable, IRenderable {
     public constructor(canvasID?: string) {
 
         this.selectCanvas(canvasID);
+
         this.gl = this.canvas.getContext("webgl2") as WebGL2RenderingContext;
         this.primitiveType = this.gl.TRIANGLES;
         this.countVertex = 6;
@@ -49,14 +50,15 @@ export default class Core implements IUpdateable, IDrawable, IRenderable {
     }
 
     public update(): boolean {
-        return true;
-    }
-    public render(): boolean {
-        this.timeSpent += 1.0 / 60.0;
-        console.log(this.timeSpent);
+        this.timeSpent += 4 / 60.0;
+        // console.log(this.timeSpent);
         const factor = (Math.sin(this.timeSpent) + 1 * 0.5);
         const color = { r: factor * 0.7 + 0.3, g: 0.0, b: 0.0, a: 1.0 } as IColor;
         this.clear(color);
+        return true;
+    }
+    public render(): boolean {
+        this.update();
         return true;
     }
     public run() {
@@ -64,7 +66,9 @@ export default class Core implements IUpdateable, IDrawable, IRenderable {
     }
 
     public draw(): boolean {
-        this.gl.drawArrays(this.primitiveType, 0, this.countVertex);
+        // this.gl.drawArrays(this.primitiveType, 0, this.countVertex);
+
+        this.gl.drawElements(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0);
         return true;
     }
 
