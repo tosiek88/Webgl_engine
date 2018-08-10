@@ -57,7 +57,6 @@ export default class Retangle implements IRenderable, IUpdateable {
         positionAndSize = null;
 
         const sampleIndicies: number[] = [];
-
         for (let index = 0; index < 256000; index += 4) {
             sampleIndicies.push(index + 0);
             sampleIndicies.push(index + 1);
@@ -66,6 +65,8 @@ export default class Retangle implements IRenderable, IUpdateable {
             sampleIndicies.push(index + 3);
             sampleIndicies.push(index + 0);
         }
+
+        this.VAO.addBuffor(this.VBOs[0], this.layout);
 
         let indicies = new Uint16Array(sampleIndicies);
         this.IBO.setBuffor(indicies);
