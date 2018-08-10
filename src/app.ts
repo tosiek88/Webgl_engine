@@ -6,8 +6,7 @@ import Retangle from "./core/Primitives/Retangle";
 
 const core = new Core();
 
-const retangle = new Retangle(core.GL, [0.0, 0.0], [0.7, 0.5]);
-
-retangle.render();
+const retangle = new Retangle(core.GL, [-0.75, 0], [0.005, 0.01]);
+core.addObj(retangle);
 
 core.run();

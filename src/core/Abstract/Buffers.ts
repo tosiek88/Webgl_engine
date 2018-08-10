@@ -11,6 +11,6 @@ export default abstract class Buffers {
 
         this.buffor = data;
         this.bind();
-        this.gl.bufferData(target, this.buffor, this.gl.STATIC_DRAW);
+        this.gl.bufferData(target, this.buffor, this.gl.DYNAMIC_DRAW);
     }
 }

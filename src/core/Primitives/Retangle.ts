@@ -1,6 +1,6 @@
 import * as fragmentSrc from "../../shaders/fragment.glsl";
 import * as vertexSrc from "../../shaders/vertex.glsl";
-import Compiler from "../Compiler";
+import ShaderCompiler from "../Compiler";
 import IBO from "../IBO";
 import IRenderable from "../Interfaces/IRenderable";
 import IUpdateable from "../Interfaces/IUpdateable";
@@ -14,16 +14,19 @@ export default class Retangle implements IRenderable, IUpdateable {
     private VBOs: VBO[] = [];
     private IBO: IBO = null;
     private layout: VertexBufferLayout = null;
-    private compiler: Compiler = null;
+    private compiler: ShaderCompiler = null;
 
-    constructor(private gl: WebGL2RenderingContext, position: number[], size: number[]) {
-        this.compiler = new Compiler(gl, vertexSrc.default, fragmentSrc.default);
+    constructor(private gl: WebGL2RenderingContext, private position: number[], private size: number[]) {
+        this.compiler = new ShaderCompiler(gl, vertexSrc.default, fragmentSrc.default);
         this.compiler.useProgram();
 
         this.VAO = new VAO(gl);
         this.VBOs.push(new VBO(gl));
+        this.layout = new VertexBufferLayout();
+        this.layout.Push(2); // 2 vertecies
+        this.VAO.addBuffor(this.VBOs[0], this.layout);
         this.IBO = new IBO(gl);
-        this.setData(position, size);
+        this.setData(position, size, 0);
     }
 
     public render(): boolean {
@@ -33,32 +36,41 @@ export default class Retangle implements IRenderable, IUpdateable {
     }
 
     public update(deltaTime: number): boolean {
+        this.setData(this.position, this.size, deltaTime %= 2 * Math.PI);
         return true;
     }
 
-    private setData(position: number[], size: number[]) {
-        // position[0]=x,
-        // position[1]=y,
-        const positionAndSize = new Float32Array([
-            position[0], position[1],
-            position[0] + size[0], position[1],
-            position[0] + size[0], position[1] + size[1],
-            position[0], position[1] + size[1],
-        ]);
+    private setData(position: number[], size: number[], phase: number) {
+        const samples: number[] = [];
+
+        for (let index = 0; index < 64000; index++) {
+            const x = 0.0025 * index - 1;
+            const freq = 50;
+            samples.push(x); samples.push(0.9 * Math.sin(Math.PI * x * freq + phase));
+            samples.push(x + size[0]); samples.push(0.9 * Math.sin(Math.PI * x * freq + phase));
+            samples.push(x + size[0]); samples.push(0.9 * Math.sin(Math.PI * x * freq + phase) + size[1]);
+            samples.push(x); samples.push(0.9 * Math.sin(Math.PI * x * freq + phase) + size[1]);
+        }
+        let positionAndSize = new Float32Array(samples);
 
         this.VBOs[0].setBuffer(positionAndSize);
+        positionAndSize = null;
 
-        this.layout = new VertexBufferLayout();
-        this.layout.Push(2); // 2 vertecies
+        const sampleIndicies: number[] = [];
 
-        this.VAO.addBuffor(this.VBOs[0], this.layout);
+        for (let index = 0; index < 256000; index += 4) {
+            sampleIndicies.push(index + 0);
+            sampleIndicies.push(index + 1);
+            sampleIndicies.push(index + 2);
+            sampleIndicies.push(index + 2);
+            sampleIndicies.push(index + 3);
+            sampleIndicies.push(index + 0);
+        }
 
-        const indicies = new Uint16Array([
-            0, 1, 2,
-            2, 3, 0,
-        ]);
-
+        let indicies = new Uint16Array(sampleIndicies);
         this.IBO.setBuffor(indicies);
+        indicies = null;
+
     }
 
 }

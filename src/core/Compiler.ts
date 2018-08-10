@@ -2,14 +2,13 @@ import { compilation } from "webpack";
 
 type Shader = (WebGLShader | null);
 
-export default class Compiler {
+export default class ShaderCompiler {
 
     private vertex: Shader;
     private fragment: Shader;
     private program: WebGLProgram;
 
     public constructor(private gl: WebGLRenderingContext, vertexSrc: string, fragmentSrc: string) {
-
         this.vertex = this.createShader(this.gl, this.gl.VERTEX_SHADER, vertexSrc) as Shader;
         this.fragment = this.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentSrc) as Shader;
         this.program = this.createProgram(this.gl, this.vertex, this.fragment) as WebGLProgram;

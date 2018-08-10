@@ -1,8 +1,10 @@
-import { mat4 } from "gl-matrix";
+
 import IColor from "./Interfaces/IColor";
 import IDrawable from "./Interfaces/IDrawable";
+
 import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
+import Retangle from "./Primitives/Retangle";
 
 export default class Core implements IUpdateable, IDrawable {
     public timeSpent: number = 0;
@@ -13,6 +15,7 @@ export default class Core implements IUpdateable, IDrawable {
     private readonly DEFAULT_CANVAS: string = "primary_canvas";
     private canvas: HTMLCanvasElement | null = null;
     private gl: WebGL2RenderingContext | null = null;
+    private objToUpdate: Retangle[] = [];
 
     public constructor(canvasID?: string) {
 
@@ -20,13 +23,13 @@ export default class Core implements IUpdateable, IDrawable {
 
         this.gl = this.canvas.getContext("webgl2") as WebGL2RenderingContext;
         this.primitiveType = this.gl.TRIANGLES;
-        this.countVertex = 6;
+        this.countVertex = 256000;
         this.resize(this.gl);
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 
     }
     public clear(color: IColor) {
-        this.gl.clearColor(color.r, color.b, color.g, color.a);
+        this.gl.clearColor(color.r, color.g, color.b, color.a);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     }
 
@@ -49,33 +52,42 @@ export default class Core implements IUpdateable, IDrawable {
         }
     }
 
-    public update(): boolean {
-        this.timeSpent += 4 / 60.0;
-        // console.log(this.timeSpent);
-        const factor = (Math.sin(this.timeSpent) + 1 * 0.5);
-        const color = { r: factor * 0.7 + 0.3, g: 0.0, b: 0.0, a: 1.0 } as IColor;
-        this.clear(color);
+    public addObj(obj: Retangle) {
+
+        this.objToUpdate.push(obj);
+    }
+
+    public update(deltaTime: number): boolean {
+        this.timeSpent += 0.1;
+        this.objToUpdate.forEach((it) => {
+            it.update(this.timeSpent);
+        });
         return true;
     }
+
     public render(): boolean {
-        this.update();
         return true;
     }
+
     public run() {
-        this.renderLoop();
+
+        requestAnimationFrame(this.renderLoop);
     }
 
     public draw(): boolean {
-        // this.gl.drawArrays(this.primitiveType, 0, this.countVertex);
-
         this.gl.drawElements(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0);
+        // this.gl.drawElementsInstanced(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0, 10000);
         return true;
     }
 
     private renderLoop = () => {
+        const color = { r: 7 / 255, g: 33 / 255, b: 66 / 255, a: 1.0 } as IColor;
+        this.clear(color);
+        this.update(0);
+
         this.render();
         this.draw();
-        window.setTimeout(this.renderLoop, 1000 / 60);
+        requestAnimationFrame(this.renderLoop);
     }
 
     private selectCanvas(idCanvas: string) {
