@@ -1,5 +1,6 @@
 #version 300 es
 // an attribute will receive data from a buffer
+precision mediump float;
 in vec2 a_position;
  
 // all shaders have a main function
