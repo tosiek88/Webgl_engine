@@ -25,7 +25,7 @@ export default class VAO {
             );
             this.gl.enableVertexAttribArray(this.currentAttID);
             this.currentAttID++;
-        });
+        }, this);
 
         this.bufforMap.set(vbo, layout);
     }

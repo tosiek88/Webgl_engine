@@ -1,4 +1,3 @@
-import { compilation } from "webpack";
 
 type Shader = (WebGLShader | null);
 

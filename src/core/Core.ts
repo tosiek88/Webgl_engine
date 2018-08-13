@@ -11,6 +11,7 @@ export default class Core implements IUpdateable, IDrawable {
 
     public countVertex: number = 0;
     public primitiveType: number = 0;
+    private readonly BACKGROUND_COLOR = { r: 7 / 255, g: 33 / 255, b: 66 / 255, a: 1.0 } as IColor;
 
     private readonly DEFAULT_CANVAS: string = "primary_canvas";
     private canvas: HTMLCanvasElement | null = null;
@@ -23,7 +24,7 @@ export default class Core implements IUpdateable, IDrawable {
 
         this.gl = this.canvas.getContext("webgl2") as WebGL2RenderingContext;
         this.primitiveType = this.gl.TRIANGLES;
-        this.countVertex = 256000;
+
         this.resize(this.gl);
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 
@@ -55,13 +56,14 @@ export default class Core implements IUpdateable, IDrawable {
     public addObj(obj: Retangle) {
 
         this.objToUpdate.push(obj);
+        this.countVertex = obj.TOTAL_NUMBER_OF_INDIECIES;
     }
 
     public update(deltaTime: number): boolean {
-        this.timeSpent += 0.1;
+        this.timeSpent += 1 / 60;
         this.objToUpdate.forEach((it) => {
             it.update(this.timeSpent);
-        });
+        }, this);
         return true;
     }
 
@@ -76,18 +78,21 @@ export default class Core implements IUpdateable, IDrawable {
 
     public draw(): boolean {
         this.gl.drawElements(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0);
-        // this.gl.drawElementsInstanced(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0, 10000);
         return true;
     }
 
     private renderLoop = () => {
-        const color = { r: 7 / 255, g: 33 / 255, b: 66 / 255, a: 1.0 } as IColor;
-        this.clear(color);
-        this.update(0);
 
+        this.clear(this.BACKGROUND_COLOR);
+        this.update(0);
+        this.objToUpdate.forEach((it) => {
+            it.render();
+            this.draw();
+        });
         this.render();
-        this.draw();
+
         requestAnimationFrame(this.renderLoop);
+
     }
 
     private selectCanvas(idCanvas: string) {
