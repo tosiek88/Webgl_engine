@@ -2,11 +2,13 @@
 import IColor from "./Interfaces/IColor";
 import IDrawable from "./Interfaces/IDrawable";
 
+import { SSL_OP_NO_TICKET } from "constants";
 import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
-import Retangle from "./Primitives/Retangle";
+import Rectangle from "./Primitives/Rectangle";
+import Renderer from "./Renderer";
 
-export default class Core implements IUpdateable, IDrawable {
+export default class Core implements IUpdateable {
     public timeSpent: number = 0;
 
     public countVertex: number = 0;
@@ -16,7 +18,7 @@ export default class Core implements IUpdateable, IDrawable {
     private readonly DEFAULT_CANVAS: string = "primary_canvas";
     private canvas: HTMLCanvasElement | null = null;
     private gl: WebGL2RenderingContext | null = null;
-    private objToUpdate: Retangle[] = [];
+    private renderer: Renderer = new Renderer();
 
     public constructor(canvasID?: string) {
 
@@ -53,45 +55,31 @@ export default class Core implements IUpdateable, IDrawable {
         }
     }
 
-    public addObj(obj: Retangle) {
+    public addObj(obj: IRenderable) {
 
-        this.objToUpdate.push(obj);
-        this.countVertex = obj.TOTAL_NUMBER_OF_INDIECIES;
+        this.renderer.attach(obj);
     }
 
     public update(deltaTime: number): boolean {
-        this.timeSpent += 1 / 60;
-        this.objToUpdate.forEach((it) => {
-            it.update(this.timeSpent);
-        }, this);
-        return true;
-    }
 
-    public render(): boolean {
         return true;
     }
 
     public run() {
 
-        requestAnimationFrame(this.renderLoop);
-    }
-
-    public draw(): boolean {
-        this.gl.drawElements(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0);
-        return true;
+        this.timeSpent = Date.now();
+        this.renderLoop();
     }
 
     private renderLoop = () => {
-
-        this.clear(this.BACKGROUND_COLOR);
-        this.update(0);
-        this.objToUpdate.forEach((it) => {
-            it.render();
-            this.draw();
-        });
-        this.render();
-
         requestAnimationFrame(this.renderLoop);
+        const elapsed = Date.now() - this.timeSpent;
+        if (elapsed > 1000 / 120) {
+            this.clear(this.BACKGROUND_COLOR);
+            this.update(elapsed);
+            this.renderer.render();
+            this.timeSpent = Date.now() - (elapsed % 1000 / 120);
+        }
 
     }
 
