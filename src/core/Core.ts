@@ -5,10 +5,9 @@ import IDrawable from "./Interfaces/IDrawable";
 import { SSL_OP_NO_TICKET } from "constants";
 import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
-import Rectangle from "./Primitives/Rectangle";
 import Renderer from "./Renderer";
 
-export default class Core implements IUpdateable {
+export default class Core implements IUpdateable, IRenderable {
     public timeSpent: number = 0;
 
     public countVertex: number = 0;
@@ -68,11 +67,11 @@ export default class Core implements IUpdateable {
     public run() {
 
         this.timeSpent = Date.now();
-        this.renderLoop();
+        this.render();
     }
 
-    private renderLoop = () => {
-        requestAnimationFrame(this.renderLoop);
+    public render = () => {
+        requestAnimationFrame(this.render);
         const elapsed = Date.now() - this.timeSpent;
         if (elapsed > 1000 / 120) {
             this.clear(this.BACKGROUND_COLOR);
@@ -80,6 +79,7 @@ export default class Core implements IUpdateable {
             this.renderer.render();
             this.timeSpent = Date.now() - (elapsed % 1000 / 120);
         }
+        return true;
 
     }
 

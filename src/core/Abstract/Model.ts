@@ -1,8 +1,8 @@
 
-import IBO from "../IBO";
+import IBO from "../Buffers/IBO";
+import VAO from "../Buffers/VAO";
+import VBO from "../Buffers/VBO";
 import ShaderCompiler from "../ShaderCompiler";
-import VAO from "../VAO";
-import VBO from "../VBO";
 
 export default abstract class Model {
 
@@ -48,19 +48,4 @@ export default abstract class Model {
         this.vao.unbind();
 
     }
-
-    public generateIndicies() {
-        const indicies: number[] = [];
-
-        indicies.push(0);
-        indicies.push(1);
-        indicies.push(2);
-        indicies.push(2);
-        indicies.push(3);
-        indicies.push(0);
-
-        this.indicies = new Uint16Array(indicies);
-        this.setIndicies(indicies);
-    }
-
 }

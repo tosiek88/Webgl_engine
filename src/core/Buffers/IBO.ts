@@ -1,4 +1,4 @@
-import Buffers from "./Abstract/Buffers";
+import Buffers from "../Abstract/Buffers";
 
 export default class IBO extends Buffers {
 
