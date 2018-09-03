@@ -1,10 +1,8 @@
 import staticImplements from "../vendors/decorator/staticImplements";
-import ILoader from "./Interfaces/ILoader";
+import ILoader, { ICallback } from "./Interfaces/ILoader";
 
-export type ICallback<Args, ReturnType> = (args: Args) => ReturnType;
-
-export default class Loader implements ILoader<Float32Array> {
-    public load<T>(genFnc: ICallback<T, Float32Array>, args: T): Float32Array {
+export default class Loader<T> implements ILoader<T, Float32Array> {
+    public load(genFnc: ICallback<T, Float32Array>, args: T): Float32Array {
 
         return genFnc(args);
     }

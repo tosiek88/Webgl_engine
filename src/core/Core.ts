@@ -1,8 +1,5 @@
 
 import IColor from "./Interfaces/IColor";
-import IDrawable from "./Interfaces/IDrawable";
-
-import { SSL_OP_NO_TICKET } from "constants";
 import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
 import Renderer from "./Renderer";

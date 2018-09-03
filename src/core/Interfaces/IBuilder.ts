@@ -4,7 +4,7 @@ import VAO from "../Buffers/VAO";
 import VBO from "../Buffers/VBO";
 import ShaderCompiler from "../ShaderCompiler";
 export interface IBuliderModel {
-    vao: VAO; vbo: VBO; ibo: IBO; compiler: ShaderCompiler;
+    gl: WebGL2RenderingContext; vao: VAO; vbo: VBO; ibo: IBO; compiler: ShaderCompiler;
 }
 
 export default interface IBulider<T, U> {

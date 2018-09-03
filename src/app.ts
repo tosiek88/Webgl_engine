@@ -2,13 +2,21 @@
 
 import Core from "./core/Core";
 
+import Line from "./core/Primitives/Line";
 import Rectangle from "./core/Primitives/Rectangle";
+
 import Complex from "./vendors/helper/Complex";
 
 const core = new Core();
-const retangle2 = new Rectangle(core.GL, new Complex(0.001, 0.), new Complex(0.2, 0.1));
+const retangle1 = new Rectangle(core.GL, { pos: new Complex(0, 0), dim: new Complex(0.001, 1) });
+const retangle2 = new Rectangle(core.GL, { pos: new Complex(0, 0), dim: new Complex(1, 0.001) });
+const line: Line = new Line(core.GL, {
+    begin: new Complex(0.3, 0.3),
+    end: new Complex(0.5, 0.5),
+    width: 0.1,
+});
+core.addObj(retangle1);
 core.addObj(retangle2);
-
-Complex.makePerpendicular(5, 5);
+core.addObj(line);
 
 core.run();

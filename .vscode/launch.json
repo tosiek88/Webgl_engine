@@ -10,9 +10,9 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}",
-            "sourceMaps": true,            
+            "sourceMaps": true,
+            "breakOnLoad": true,
             "breakOnLoadStrategy": "regex",
-            "breakOnLoad": true                 
         }
     ]
 }

@@ -5,7 +5,7 @@ import VBO from "../Buffers/VBO";
 import ShaderCompiler from "../ShaderCompiler";
 
 export default abstract class Model {
-
+    protected gl: WebGL2RenderingContext;
     protected vao: VAO;
     protected vbo: VBO;
     protected ibo: IBO;

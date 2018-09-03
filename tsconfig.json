@@ -58,7 +58,6 @@
   },
   "exclude": [
     "node_modules",
-    "./src/shaders/*",
-    "./core/Primitives/Line.ts"
+    "./src/shaders/*"
   ]
 }

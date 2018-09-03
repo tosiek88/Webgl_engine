@@ -1,13 +1,24 @@
+import { mat4 } from "gl-matrix";
+import * as fragmentSrc from "../shaders/fragmentLine.glsl";
+import * as vertexSrc from "../shaders/vertexLine.glsl";
 import Model from "./Abstract/Model";
 import { IBuliderModel } from "./Interfaces/IBuilder";
+import ShaderCompiler from "./ShaderCompiler";
 
 export default class RawModel2D extends Model {
     constructor(private obj?: IBuliderModel) {
         super();
+        this.gl = obj.gl;
         this.vao = obj.vao;
         this.vbo = obj.vbo;
         this.ibo = obj.ibo;
-        this.compiler = obj.compiler;
+        this.compiler = new ShaderCompiler(this.gl, vertexSrc.default, fragmentSrc.default);
+        this.compiler.useProgram();
+        this.compiler.getUnifromLocation("u_ortho");
+        const pOrtho: mat4 = mat4.create();
+        mat4.ortho(pOrtho, -1.0, 1.0, -1.0, 1.0, 0.1, 100);
+
+        this.compiler.setUniformMatrix4(pOrtho, "u_ortho");
 
     }
 

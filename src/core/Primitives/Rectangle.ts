@@ -2,30 +2,26 @@
 import RawModel2DFactory from "../Factors/ModelFactory";
 
 import Complex from "../../vendors/helper/Complex";
+import Model from "../Abstract/Model";
+import ILoader from "../Interfaces/ILoader";
 import IRenderable from "../Interfaces/IRenderable";
 import IUpdateable from "../Interfaces/IUpdateable";
 import Loader from "../Loader";
-import RawModel2D from "../RawModel2D";
+
+interface IRetangleArgs {
+    dim: Complex;
+    pos: Complex;
+}
 
 export default class Rectangle implements IRenderable, IUpdateable {
-    private model: RawModel2D;
-    private loader: Loader = new Loader();
-    constructor(private gl: WebGL2RenderingContext, private pos: Complex, private dim: Complex) {
+    private model: Model;
+    private loader: ILoader<IRetangleArgs, Float32Array> = new Loader<IRetangleArgs>();
+    constructor(private gl: WebGL2RenderingContext, private prop: IRetangleArgs) {
 
         this.model = RawModel2DFactory.create(gl);
 
-        interface IRetangleArgs {
-            dim: Complex;
-            pos: Complex;
-        }
-
-        const RetangleArgs = {
-            dim,
-            pos,
-        };
-
         this.model.setData(
-            this.loader.load<IRetangleArgs>(
+            this.loader.load(
                 (Args) => {
                     const samples: Float32Array = new Float32Array(
                         [
@@ -37,7 +33,7 @@ export default class Rectangle implements IRenderable, IUpdateable {
                         ]);
                     return samples;
                 },
-                RetangleArgs),
+                prop),
         );
         this.model.useProgram();
     }
