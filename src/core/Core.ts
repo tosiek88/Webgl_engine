@@ -25,6 +25,8 @@ export default class Core implements IUpdateable, IRenderable {
 
         this.resize(this.gl);
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     }
     public clear(color: IColor) {
@@ -32,22 +34,22 @@ export default class Core implements IUpdateable, IRenderable {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     }
 
-    public resize(glContext: WebGL2RenderingContext) {
+    public resize(gl: WebGL2RenderingContext) {
         const realToCSSPixels = window.devicePixelRatio;
 
         // Lookup the size the browser is displaying the canvas in CSS pixels
         // and compute a size needed to make our drawingbuffer match it in
         // device pixels.
-        const displayWidth = Math.floor(glContext.canvas.clientWidth * realToCSSPixels);
-        const displayHeight = Math.floor(glContext.canvas.clientHeight * realToCSSPixels);
+        const displayWidth = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
+        const displayHeight = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
 
         // Check if the canvas is not the same size.
-        if (glContext.canvas.width !== displayWidth ||
-            glContext.canvas.height !== displayHeight) {
+        if (gl.canvas.width !== displayWidth ||
+            gl.canvas.height !== displayHeight) {
 
             // Make the canvas the same size
-            glContext.canvas.width = displayWidth;
-            glContext.canvas.height = displayHeight;
+            gl.canvas.width = displayWidth;
+            gl.canvas.height = displayHeight;
         }
     }
 

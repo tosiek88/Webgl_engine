@@ -12,11 +12,14 @@ export default class RawModel2D extends Model {
         this.vao = obj.vao;
         this.vbo = obj.vbo;
         this.ibo = obj.ibo;
+
         this.compiler = new ShaderCompiler(this.gl, vertexSrc.default, fragmentSrc.default);
         this.compiler.useProgram();
         this.compiler.getUnifromLocation("u_ortho");
+
         const pOrtho: mat4 = mat4.create();
-        mat4.ortho(pOrtho, -1.0, 1.0, -1.0, 1.0, 0.1, 100);
+        const ratio = this.gl.canvas.width / this.gl.canvas.height;
+        mat4.ortho(pOrtho, -ratio, ratio, -1, 1, 0.1, 100);
 
         this.compiler.setUniformMatrix4(pOrtho, "u_ortho");
 
