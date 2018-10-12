@@ -9,5 +9,5 @@
     // gl_FragColor is a special variable a fragment shader
     // is responsible for setting
     vec2 perp=vec2(out_position.y, -out_position.x);
-    fragmentColor = vec4(1, 0, 0.5, 1.0-length(perp)); // return redish-purple
+    fragmentColor = vec4(1, 0, 0.5, 1.0); // return redish-purple
   }

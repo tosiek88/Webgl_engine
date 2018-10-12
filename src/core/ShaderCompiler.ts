@@ -52,6 +52,8 @@ export default class ShaderCompiler {
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+        const error = gl.getShaderInfoLog(shader);
+
         if (success) {
             return shader;
         }

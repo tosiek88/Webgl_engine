@@ -5,6 +5,7 @@ import Core from "./core/Core";
 import Line from "./core/Primitives/Line";
 import Rectangle from "./core/Primitives/Rectangle";
 
+import AntialiasedLine from "./core/Primitives/AntialiasedLine";
 import Complex from "./vendors/helper/Complex";
 
 const core = new Core();
@@ -15,8 +16,16 @@ const line: Line = new Line(core.GL, {
     end: new Complex(1.5, 1),
     width: 0.005,
 });
+
+const line2: AntialiasedLine = new AntialiasedLine(core.GL, {
+    begin: new Complex(0.0, 0.0),
+    end: new Complex(0.7, 1),
+    width: 0.005,
+});
+
 core.addObj(retangle1);
 core.addObj(retangle2);
-core.addObj(line);
+// core.addObj(line);
+core.addObj(line2);
 
 core.run();
