@@ -27,22 +27,26 @@ export default class AntialiasedLine implements IRenderable, IUpdateable {
         this.model.setData(
             this.loader.load(
                 (Args) => {
-                    const { begin, end, width } = this.args;
+                    const { begin, end } = Args;
 
                     const samples: Float32Array = new Float32Array(
                         [
                             // tslint:disable-next-line:max-line-length
-                            begin.X + 0.1, begin.Y, normal.X, normal.Y,
+                            begin.X, begin.Y, normal.X, normal.Y,
                             begin.X, begin.Y, -normal.X, -normal.Y,
                             end.X, end.Y, -normal.X, -normal.Y,
                             end.X, end.Y, normal.X, normal.Y,
 
                         ]);
-                    console.log(samples);
+                    // console.log(samples);
                     return samples;
                 },
-                args),
+                this.args),
         );
+        this.model.setUniforms([{
+            name: "u_width",
+            value: args.width,
+        }]);
         this.model.useProgram();
     }
 
@@ -54,6 +58,32 @@ export default class AntialiasedLine implements IRenderable, IUpdateable {
 
     public update(deltaTime: number): boolean {
 
+        this.args.end.Angle += deltaTime * 0.005;
+
+        this.vector = Complex.Substract(this.args.end, this.args.begin);
+        const normal = this.vector.Perpendicular.Normal;
+        this.model.updateModel(this.loader.load(
+            (Args) => {
+                const { begin, end } = Args;
+
+                const samples: Float32Array = new Float32Array(
+                    [
+                        // tslint:disable-next-line:max-line-length
+                        begin.X, begin.Y, normal.X, normal.Y,
+                        begin.X, begin.Y, -normal.X, -normal.Y,
+                        end.X, end.Y, -normal.X, -normal.Y,
+                        end.X, end.Y, normal.X, normal.Y,
+
+                    ]);
+                // console.log(samples);
+                return samples;
+            },
+            this.args));
+        this.model.setUniforms([{
+            name: "u_width",
+            value: this.args.width,
+        }]);
         return true;
     }
+
 }

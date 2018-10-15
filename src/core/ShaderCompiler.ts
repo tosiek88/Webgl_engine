@@ -25,7 +25,12 @@ export default class ShaderCompiler {
     }
 
     public getUnifromLocation(name: string): WebGLUniformLocation {
-        return this.ortho = this.gl.getUniformLocation(this.program, name);
+        return this.gl.getUniformLocation(this.program, name);
+    }
+
+    public setUniformVariable1f(value: number, name: string) {
+        const location = this.getUnifromLocation(name);
+        this.gl.uniform1f(location, value);
     }
 
     public setUniformMatrix4(matrix: mat4, name: string) {
@@ -38,7 +43,7 @@ export default class ShaderCompiler {
     }
 
     public setDefaultOrthoMatrix() {
-        this.getUnifromLocation("u_ortho");
+        this.ortho = this.getUnifromLocation("u_ortho");
 
         const pOrtho: mat4 = mat4.create();
         const ratio = this.gl.canvas.width / this.gl.canvas.height;
@@ -64,6 +69,7 @@ export default class ShaderCompiler {
         gl.compileShader(shader);
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
         const error = gl.getShaderInfoLog(shader);
+        // console.error(error);
 
         if (success) {
             return shader;

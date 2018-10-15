@@ -4,6 +4,11 @@ import VAO from "../Buffers/VAO";
 import VBO from "../Buffers/VBO";
 import ShaderCompiler from "../ShaderCompiler";
 
+interface IUniform {
+    name: string;
+    value: any;
+}
+
 export default abstract class Model {
     protected gl: WebGL2RenderingContext;
     protected vao: VAO;
@@ -29,6 +34,15 @@ export default abstract class Model {
 
     public getModel(): Model {
         return this;
+    }
+
+    public setUniforms(uniforms: IUniform[]) {
+        for (const it of uniforms) {
+            // console.log(typeof (it.value));
+            if (typeof (it.value) === "number") {
+                this.compiler.setUniformVariable1f(it.value, it.name);
+            }
+        }
     }
 
     public updateModel(data: Float32Array) {

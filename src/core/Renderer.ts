@@ -1,15 +1,11 @@
 
 import IRenderable from "./Interfaces/IRenderable";
 
-export default class Renderer implements IRenderable {
+export default class Renderer {
     private objects: IRenderable[] = [];
 
-    public attach(object: IRenderable) {
-        this.objects.push(object);
-    }
-
-    public render(): boolean {
-        for (const el of this.objects) {
+    public render(objects: IRenderable[]): boolean {
+        for (const el of objects) {
             el.render();
         }
         return true;

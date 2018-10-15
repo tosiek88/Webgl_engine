@@ -19,13 +19,13 @@ const line: Line = new Line(core.GL, {
 
 const line2: AntialiasedLine = new AntialiasedLine(core.GL, {
     begin: new Complex(0.0, 0.0),
-    end: new Complex(0.7, 1),
+    end: new Complex(1, -1),
     width: 0.005,
 });
 
-core.addObj(retangle1);
-core.addObj(retangle2);
+core.attach(retangle1);
+core.attach(retangle2);
 // core.addObj(line);
-core.addObj(line2);
+core.attach(line2);
 
 core.run();
