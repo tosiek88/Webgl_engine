@@ -3,6 +3,10 @@ import { mat4 } from "gl-matrix";
 type Shader = (WebGLShader | null);
 
 export default class ShaderCompiler {
+
+    public get Program(): WebGLProgram {
+        return this.program;
+    }
     public name = "";
 
     private vertex: Shader;
@@ -33,8 +37,14 @@ export default class ShaderCompiler {
         this.gl.useProgram(this.program);
     }
 
-    public get Program(): WebGLProgram {
-        return this.program;
+    public setDefaultOrthoMatrix() {
+        this.getUnifromLocation("u_ortho");
+
+        const pOrtho: mat4 = mat4.create();
+        const ratio = this.gl.canvas.width / this.gl.canvas.height;
+        mat4.ortho(pOrtho, -ratio, ratio, -1, 1, 0.1, 100);
+
+        this.setUniformMatrix4(pOrtho, "u_ortho");
     }
 
     private createProgram(gl: WebGLRenderingContext, vertexShader: Shader, fragmentShader: Shader) {
