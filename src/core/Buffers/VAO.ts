@@ -25,16 +25,21 @@ export default class VAO {
             );
             this.gl.enableVertexAttribArray(this.currentAttID);
             this.currentAttID++;
-        });
+        }, this);
 
         this.bufforMap.set(vbo, layout);
     }
 
+    public GetLayout(vbo: VBO): VertexBufferLayout {
+        return this.bufforMap.get(vbo);
+    }
+
     public bind() {
         this.gl.bindVertexArray(this._VAO);
-        this.bufforMap.forEach((value, key) => {
-            key.bind();
-        });
+        // this.bufforMap.forEach((value, key) => {
+        //     key.bind();
+        // });
+
     }
 
     public unbind() {

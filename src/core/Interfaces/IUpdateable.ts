@@ -1,5 +1,5 @@
 
 export default interface IUpdateable {
-    timeSpent: number;
-    update(): boolean;
+
+    update(deltaTime: number): boolean;
 }

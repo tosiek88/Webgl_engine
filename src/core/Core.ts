@@ -1,18 +1,20 @@
-import { mat4 } from "gl-matrix";
+
 import IColor from "./Interfaces/IColor";
-import IDrawable from "./Interfaces/IDrawable";
 import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
+import Renderer from "./Renderer";
 
-export default class Core implements IUpdateable, IDrawable {
+export default class Core implements IUpdateable, IRenderable {
     public timeSpent: number = 0;
 
     public countVertex: number = 0;
     public primitiveType: number = 0;
+    private readonly BACKGROUND_COLOR = { r: 7 / 255, g: 33 / 255, b: 66 / 255, a: 1.0 } as IColor;
 
     private readonly DEFAULT_CANVAS: string = "primary_canvas";
     private canvas: HTMLCanvasElement | null = null;
     private gl: WebGL2RenderingContext | null = null;
+    private renderer: Renderer = new Renderer();
 
     public constructor(canvasID?: string) {
 
@@ -20,62 +22,64 @@ export default class Core implements IUpdateable, IDrawable {
 
         this.gl = this.canvas.getContext("webgl2") as WebGL2RenderingContext;
         this.primitiveType = this.gl.TRIANGLES;
-        this.countVertex = 6;
+
         this.resize(this.gl);
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     }
     public clear(color: IColor) {
-        this.gl.clearColor(color.r, color.b, color.g, color.a);
+        this.gl.clearColor(color.r, color.g, color.b, color.a);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     }
 
-    public resize(glContext: WebGL2RenderingContext) {
+    public resize(gl: WebGL2RenderingContext) {
         const realToCSSPixels = window.devicePixelRatio;
 
         // Lookup the size the browser is displaying the canvas in CSS pixels
         // and compute a size needed to make our drawingbuffer match it in
         // device pixels.
-        const displayWidth = Math.floor(glContext.canvas.clientWidth * realToCSSPixels);
-        const displayHeight = Math.floor(glContext.canvas.clientHeight * realToCSSPixels);
+        const displayWidth = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
+        const displayHeight = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
 
         // Check if the canvas is not the same size.
-        if (glContext.canvas.width !== displayWidth ||
-            glContext.canvas.height !== displayHeight) {
+        if (gl.canvas.width !== displayWidth ||
+            gl.canvas.height !== displayHeight) {
 
             // Make the canvas the same size
-            glContext.canvas.width = displayWidth;
-            glContext.canvas.height = displayHeight;
+            gl.canvas.width = displayWidth;
+            gl.canvas.height = displayHeight;
         }
     }
 
-    public update(): boolean {
-        this.timeSpent += 4 / 60.0;
-        // console.log(this.timeSpent);
-        const factor = (Math.sin(this.timeSpent) + 1 * 0.5);
-        const color = { r: factor * 0.7 + 0.3, g: 0.0, b: 0.0, a: 1.0 } as IColor;
-        this.clear(color);
+    public addObj(obj: IRenderable) {
+
+        this.renderer.attach(obj);
+    }
+
+    public update(deltaTime: number): boolean {
+
         return true;
     }
-    public render(): boolean {
-        this.update();
-        return true;
-    }
+
     public run() {
-        this.renderLoop();
-    }
 
-    public draw(): boolean {
-        // this.gl.drawArrays(this.primitiveType, 0, this.countVertex);
-
-        this.gl.drawElements(this.primitiveType, this.countVertex, this.gl.UNSIGNED_SHORT, 0);
-        return true;
-    }
-
-    private renderLoop = () => {
+        this.timeSpent = Date.now();
         this.render();
-        this.draw();
-        window.setTimeout(this.renderLoop, 1000 / 60);
+    }
+
+    public render = () => {
+        requestAnimationFrame(this.render);
+        const elapsed = Date.now() - this.timeSpent;
+        if (elapsed > 1000 / 120) {
+            this.clear(this.BACKGROUND_COLOR);
+            this.update(elapsed);
+            this.renderer.render();
+            this.timeSpent = Date.now() - (elapsed % 1000 / 120);
+        }
+        return true;
+
     }
 
     private selectCanvas(idCanvas: string) {

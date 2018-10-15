@@ -12,10 +12,14 @@
   "devDependencies": {
     "@types/gl-matrix": "^2.4.0",
     "babel-loader": "^7.1.5",
+    "gl-matrix": "^2.7.1",
     "ts-loader": "^4.4.2",
     "ts-shader-loader": "^1.0.5",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.4"
-  } 
+  },
+  "dependencies": {
+    "@types/webgl2": "0.0.4"
+  }
 }

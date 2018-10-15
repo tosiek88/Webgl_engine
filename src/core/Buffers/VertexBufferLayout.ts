@@ -12,6 +12,10 @@ export default class VertexBufferLayout {
         return this.stride;
     }
 
+    public GetCountOfElement(index: number): number {
+        return this.elements[index].count;
+    }
+
     public Push<FLOAT>(count: number) {
         const o = {
             count,
