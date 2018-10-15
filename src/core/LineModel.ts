@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
-import * as fragmentSrc from "../shaders/fragmentLine.glsl";
-import * as vertexSrc from "../shaders/vertexLine.glsl";
+import * as fragmentSrc from "../shaders/fragmentALine.glsl";
+import * as vertexSrc from "../shaders/vertexALine.glsl";
 import Model from "./Abstract/Model";
 import { IBuliderModel } from "./Interfaces/IBuilder";
 import ShaderCompiler from "./ShaderCompiler";
@@ -14,6 +14,7 @@ export default class LineModel extends Model {
         this.ibo = obj.ibo;
 
         this.compiler = new ShaderCompiler(this.gl, vertexSrc.default, fragmentSrc.default);
+        this.compiler.name = "LineModel ShaderCompiler";
         this.compiler.useProgram();
         this.compiler.getUnifromLocation("u_ortho");
 

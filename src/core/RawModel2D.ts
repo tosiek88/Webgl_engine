@@ -14,6 +14,7 @@ export default class RawModel2D extends Model {
         this.ibo = obj.ibo;
 
         this.compiler = new ShaderCompiler(this.gl, vertexSrc.default, fragmentSrc.default);
+        this.compiler.name = "RawModel2D Compiler";
         this.compiler.useProgram();
         this.compiler.getUnifromLocation("u_ortho");
 

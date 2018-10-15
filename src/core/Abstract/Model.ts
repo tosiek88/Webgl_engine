@@ -42,6 +42,7 @@ export default abstract class Model {
     public bind() {
         this.vao.bind();
         this.ibo.bind();
+        this.compiler.useProgram();
     }
 
     public unbind() {

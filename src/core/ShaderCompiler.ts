@@ -3,6 +3,7 @@ import { mat4 } from "gl-matrix";
 type Shader = (WebGLShader | null);
 
 export default class ShaderCompiler {
+    public name = "";
 
     private vertex: Shader;
     private fragment: Shader;
