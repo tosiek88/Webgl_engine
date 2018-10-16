@@ -11,6 +11,9 @@ cache:
   paths:
   - node_modules/
 
+variables:
+    NPM_TOKEN: "3fa1f4b2-460b-428e-9a06-b8e02d87776a"
+
 test_async:
   script:
    - npm install
