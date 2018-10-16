@@ -16,6 +16,7 @@ test_async:
    - npm install
    - npm install typescript
    - npm run build
+   - npm publish
   
 
 
