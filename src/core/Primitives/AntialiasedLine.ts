@@ -11,6 +11,7 @@ interface ILineArgs {
     width: number;
     begin: Complex;
     end: Complex;
+
 }
 
 export default class AntialiasedLine implements IRenderable, IUpdateable {
@@ -20,20 +21,14 @@ export default class AntialiasedLine implements IRenderable, IUpdateable {
     constructor(private gl: WebGL2RenderingContext, private args: ILineArgs) {
 
         this.model = LineModelFactory.create(gl);
-
-        this.vector = Complex.Substract(args.end, args.begin);
-        console.log(`BEGIN: ${this.args.begin}`);
-        console.log(`END: ${this.args.end}`);
-        console.log(`AFTER SUBSTRACT ${this.vector}`);
+        this.vector = Complex.Substract(this.args.end, this.args.begin);
         let normal = this.vector.Perpendicular;
-        console.log(`PERPENDICULAR ${normal}`);
         normal = normal.Normal;
-        console.log(`NORMAL ${normal.Normal}`);
 
         this.model.setData(
             this.loader.load(
                 (Args) => {
-                    const { begin, end, width } = args;
+                    const { begin, end } = Args;
 
                     const samples: Float32Array = new Float32Array(
                         [
@@ -44,11 +39,15 @@ export default class AntialiasedLine implements IRenderable, IUpdateable {
                             end.X, end.Y, normal.X, normal.Y,
 
                         ]);
-                    console.log(samples);
+
                     return samples;
                 },
-                args),
+                this.args),
         );
+        this.model.setUniforms([{
+            name: "u_width",
+            value: args.width,
+        }]);
         this.model.useProgram();
     }
 
@@ -59,7 +58,40 @@ export default class AntialiasedLine implements IRenderable, IUpdateable {
     }
 
     public update(deltaTime: number): boolean {
+        deltaTime *= 0.1;
+        this.args.end.Angle = this.lerp(
+            this.args.end.Angle + deltaTime * 0.01,
+            this.args.end.Angle + deltaTime * 0.05,
+            0.01);
 
+        this.vector = Complex.Substract(this.args.end, this.args.begin);
+        const normal = this.vector.Perpendicular.Normal;
+        this.model.updateModel(this.loader.load(
+            (Args) => {
+                const { begin, end } = Args;
+                const samples: Float32Array = new Float32Array(
+                    [
+                        // tslint:disable-next-line:max-line-length
+                        begin.X, begin.Y, normal.X, normal.Y,
+                        begin.X, begin.Y, -normal.X, -normal.Y,
+                        end.X, end.Y, -normal.X, -normal.Y,
+                        end.X, end.Y, normal.X, normal.Y,
+
+                    ]);
+                // console.log(samples);
+                return samples;
+
+            },
+            this.args));
+        this.model.setUniforms([{
+            name: "u_width",
+            value: this.args.width,
+        }]);
         return true;
     }
+
+    private lerp(min: number, max: number, fraction: number) {
+        return (max - min) * fraction + min;
+    }
+
 }

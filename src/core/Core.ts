@@ -4,6 +4,8 @@ import IRenderable from "./Interfaces/IRenderable";
 import IUpdateable from "./Interfaces/IUpdateable";
 import Renderer from "./Renderer";
 
+type IGraphObject = IRenderable & IUpdateable;
+
 export default class Core implements IUpdateable, IRenderable {
     public timeSpent: number = 0;
 
@@ -15,6 +17,8 @@ export default class Core implements IUpdateable, IRenderable {
     private canvas: HTMLCanvasElement | null = null;
     private gl: WebGL2RenderingContext | null = null;
     private renderer: Renderer = new Renderer();
+    private objects: IGraphObject[] = [];
+    private isRunning: boolean = true;
 
     public constructor(canvasID?: string) {
 
@@ -53,31 +57,40 @@ export default class Core implements IUpdateable, IRenderable {
         }
     }
 
-    public addObj(obj: IRenderable) {
-
-        this.renderer.attach(obj);
+    public attach(object: IRenderable & IUpdateable) {
+        this.objects.push(object);
     }
 
     public update(deltaTime: number): boolean {
-
+        for (const it of this.objects) {
+            it.update(deltaTime);
+        }
         return true;
     }
 
     public run() {
-
         this.timeSpent = Date.now();
-        this.render();
+        requestAnimationFrame(this.render);
     }
 
-    public render = () => {
-        requestAnimationFrame(this.render);
+    public stopMainLoop() {
+        this.isRunning = !this.isRunning;
+    }
+
+    public render = (time: number) => {
+        if (this.isRunning) {
+            requestAnimationFrame(this.render);
+        }
+
         const elapsed = Date.now() - this.timeSpent;
         if (elapsed > 1000 / 120) {
+
+            this.timeSpent = Date.now() - (elapsed % 1000 / 60);
             this.clear(this.BACKGROUND_COLOR);
             this.update(elapsed);
-            this.renderer.render();
-            this.timeSpent = Date.now() - (elapsed % 1000 / 120);
+            this.renderer.render(this.objects);
         }
+
         return true;
 
     }

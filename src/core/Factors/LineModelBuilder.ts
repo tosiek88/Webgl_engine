@@ -18,7 +18,11 @@ export default class LineModelBuilder<T extends Model> extends Builder<T> {
 
     protected setupCompiler() {
         this.compiler = new ShaderCompiler(this.gl, vertexSrc.default, fragmentSrc.default);
+        this.compiler.name = "Aline";
+
         this.compiler.useProgram();
+        this.compiler.setDefaultOrthoMatrix();
+
     }
 
 }
