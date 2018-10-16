@@ -35,6 +35,7 @@ export default class Builder<T extends Model> extends Model implements IBulider<
     protected setupCompiler() {
         this.compiler = new ShaderCompiler(this.gl, vertexSrc.default, fragmentSrc.default);
         this.compiler.useProgram();
+        this.compiler.setDefaultOrthoMatrix();
     }
 
     protected buildType(Type: new (obj: IBuliderModel) => T) {

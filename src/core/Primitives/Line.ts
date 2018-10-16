@@ -23,13 +23,10 @@ export default class Line implements IRenderable, IUpdateable {
         this.model = RawModel2DFactory.create(gl);
 
         this.vector = Complex.Substract(args.end, args.begin);
-        console.log(`BEGIN: ${this.args.begin}`);
-        console.log(`END: ${this.args.end}`);
-        console.log(`AFTER SUBSTRACT ${this.vector}`);
+
         let normal = this.vector.Perpendicular;
-        console.log(`PERPENDICULAR ${normal}`);
+
         normal = normal.Normal;
-        console.log(`NORMAL ${normal.Normal}`);
 
         this.model.setData(
             this.loader.load(
@@ -44,7 +41,7 @@ export default class Line implements IRenderable, IUpdateable {
                             begin.X + width * normal.X, begin.Y + width * normal.Y,
 
                         ]);
-                    console.log(samples);
+                    // console.log(samples);
                     return samples;
                 },
                 args),

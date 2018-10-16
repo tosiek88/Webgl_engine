@@ -4,6 +4,11 @@ type Shader = (WebGLShader | null);
 
 export default class ShaderCompiler {
 
+    public get Program(): WebGLProgram {
+        return this.program;
+    }
+    public name = "";
+
     private vertex: Shader;
     private fragment: Shader;
     private program: WebGLProgram;
@@ -20,7 +25,13 @@ export default class ShaderCompiler {
     }
 
     public getUnifromLocation(name: string): WebGLUniformLocation {
-        return this.ortho = this.gl.getUniformLocation(this.program, name);
+        return this.gl.getUniformLocation(this.program, name);
+    }
+
+    public setUniformVariable1f(value: number, name: string) {
+        this.useProgram();
+        const location = this.getUnifromLocation(name);
+        this.gl.uniform1f(location, value);
     }
 
     public setUniformMatrix4(matrix: mat4, name: string) {
@@ -32,8 +43,14 @@ export default class ShaderCompiler {
         this.gl.useProgram(this.program);
     }
 
-    public get Program(): WebGLProgram {
-        return this.program;
+    public setDefaultOrthoMatrix() {
+        this.ortho = this.getUnifromLocation("u_ortho");
+
+        const pOrtho: mat4 = mat4.create();
+        const ratio = this.gl.canvas.width / this.gl.canvas.height;
+        mat4.ortho(pOrtho, -ratio, ratio, -1, 1, 0.1, 100);
+
+        this.setUniformMatrix4(pOrtho, "u_ortho");
     }
 
     private createProgram(gl: WebGLRenderingContext, vertexShader: Shader, fragmentShader: Shader) {
@@ -53,6 +70,7 @@ export default class ShaderCompiler {
         gl.compileShader(shader);
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
         const error = gl.getShaderInfoLog(shader);
+        // console.error(error);
 
         if (success) {
             return shader;

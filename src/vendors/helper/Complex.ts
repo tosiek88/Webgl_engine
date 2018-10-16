@@ -21,6 +21,12 @@ export default class Complex {
         return Math.atan2(this.y, this.x);
     }
 
+    public set Angle(value: number) {
+        this.angle = value;
+        this.x = this.mod * Math.cos(value);
+        this.y = this.mod * Math.sin(value);
+    }
+
     public get Normal(): Complex {
         return new Complex(Math.cos(this.angle), Math.sin(this.angle));
     }
@@ -69,6 +75,12 @@ export default class Complex {
 
     public get Mod(): number {
         return Math.sqrt(Math.abs(this.x * this.x + this.y * this.y));
+    }
+
+    public set Mod(value: number) {
+        this.mod = value;
+        this.x = Math.cos(this.angle) * this.mod;
+        this.y = Math.sin(this.angle) * this.mod;
     }
 
     public toString(): string {
