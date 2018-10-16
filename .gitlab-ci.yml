@@ -16,6 +16,7 @@ test_async:
    - npm install
    - npm install typescript
    - npm run build
+   - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
    - npm adduser
    - npm whoami
    - npm publish
