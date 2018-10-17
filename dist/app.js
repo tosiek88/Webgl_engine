@@ -7874,7 +7874,6 @@ var Core = /** @class */ (function () {
         this.renderer = new Renderer_1.default();
         this.objects = [];
         this.isRunning = true;
-        this.UPDATE_RATE = 100;
         this.render = function (time) {
             if (_this.isRunning) {
                 requestAnimationFrame(_this.render);
